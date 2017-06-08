@@ -2,6 +2,7 @@ from django import forms
 from captcha.fields import ReCaptchaField
 
 from django.utils.translation import ugettext_lazy as _
+from django.conf import settings
 import logging
 
 class OrderForm(forms.Form):
@@ -9,7 +10,8 @@ class OrderForm(forms.Form):
     data_surname = forms.CharField(label=_('Surname'), max_length=20)
     data_email = forms.EmailField(label=_('Email'))
     data_phone = forms.CharField(label=_('Phone'), max_length=20)
-    antispam = ReCaptchaField()
+    if not settings.DEBUG:
+        antispam = ReCaptchaField()
 
     def __init__(self, orderdates, *args, **kwargs):
         super(OrderForm, self).__init__(*args, **kwargs)

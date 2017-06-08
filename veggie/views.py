@@ -4,8 +4,8 @@ from django.contrib import messages
 from django.utils import timezone
 from django.utils.translation import ugettext as _
 from django.http import JsonResponse,HttpResponseRedirect, HttpResponse
+from django.core.mail import EmailMessage
 import mistune
-
 from .models import Offer, Item, OrderDate, Order, OrderItem
 from .forms import OrderForm
 
@@ -33,6 +33,11 @@ def offerDetail(request, id):
             neworder = Order(order_name=orderForm.cleaned_data.get("data_firstname"),order_date_id=orderForm.cleaned_data.get("data_orderdate"),
                 offer_id=id, order_surname=orderForm.cleaned_data.get("data_surname"), order_phone=orderForm.cleaned_data.get("data_phone"), order_email=orderForm.cleaned_data.get("data_email"), order_confirm_hash=confirmhash, order_edit_hash=edithash)
             neworder.save()
+            body = '<html>\n<body>\n<a href="localhost:8000/veggie/confirm/%s">Confirm order</a>\n\n'%(confirmhash)
+            body += "<table>\n<thead>\n"
+            body += "<tr><th>Description</th><th>Amount</th><th>Price</th><th>Sum</th></tr>\n"
+            body += "</thead>\n<tbody>\n"
+            sum = 0
             for shopitem in orderForm.cleaned_data:
                 if shopitem.startswith("shopitem_"):
                     if orderForm.cleaned_data[shopitem]:
@@ -40,7 +45,24 @@ def offerDetail(request, id):
                         item = offer.item_set.filter(item_status=True).filter(pk=itemid)[0]
                         oi = OrderItem(oi=neworder, item=item, amount=orderForm.cleaned_data[shopitem])
                         oi.save()
+                        sum += oi.item.item_price*oi.amount
+                        body += "<tr><td>" + str(oi.item.item_description) +"</td><td>"+ str(oi.amount)+"</td><td>"+str(oi.item.item_price)+ " " + str(oi.item.item_unitsize)+"</td><td>"+str(oi.item.item_price*oi.amount)+"</td></tr>\n"
+            
+            body += '<tr><td colspan="3">Sum</td><td>'+str(sum)+' Euro</td></tr>\n'
+            body += "</tbody>\n</table>\n\n"
+            body += "<b>If this order was not submitted by you or you reconsidered, just ignore this mail</b>"
+            body += "</body>\n</html>"
             messages.add_message(request, messages.INFO, _('Order added successfully, you have to confirm the order with the sent confirmation link via email'))
+
+            email = EmailMessage(
+                _("Order -%(description)s- for -%(date)s-, please confirm order")%{"date": neworder.order_date.order_date, 'description':neworder.offer.offer_text},
+                str(body),
+                'bratshop@do-not-reply.com',
+                [orderForm.cleaned_data.get("data_email")],
+                reply_to=['peter.gastinger@gmail.com'],
+            )
+            email.content_subtype = "html"
+            email.send()
             return redirect('index')
     else:
         description = mistune.markdown(offer.offer_description)
@@ -69,7 +91,7 @@ def _get_order_for_orderdateid(orderdateid):
             for oi in ois:
                 ordersum += oi.amount*oi.item.item_price
                 orderitems.append(dict(description=oi.item.item_description, amount=oi.amount, price=oi.item.item_price, unitsize=oi.item.item_unitsize, itemsum=oi.item.item_price*oi.amount))
-            order_dict = dict(id=item.id, name=item.order_name, surname=item.order_surname, phone=item.order_phone, email=item.order_email, status=item.order_confirmed, confirmhash=item.order_confirm_hash, ordersum=ordersum, orderitems=orderitems)
+            order_dict = dict(id=item.id, name=item.order_name, surname=item.order_surname, phone=item.order_phone, email=item.order_email, status=item.order_confirmed, confirmhash=item.order_confirm_hash, ordersum=ordersum, orderitems=orderitems, orderdate=orderdate.order_date)
             orders_list.append(order_dict)
     return orders_list
 
@@ -92,7 +114,10 @@ def confirmOrder(request, confirmhash):
         offer.order_confirmed = True
         offer.save()
         messages.add_message(request, messages.SUCCESS, _('Order successfully confirmed'))
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    if request.META.get('HTTP_REFERER'):
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    else:
+        return redirect('index')
 
 
 def downloadxls(request, orderdateid):
@@ -145,7 +170,7 @@ def downloadxls(request, orderdateid):
             if len(line) > col_length["col4"]:
                 col_length["col4"] = len(line)
             items+= line
-        worksheet.write(row, 4, items, format_wrap)
+        worksheet.write(row, 4, items.rstrip(), format_wrap)
         row += 1
 
     worksheet.set_column(0,0, col_length["col0"]+2)

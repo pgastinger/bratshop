@@ -141,6 +141,9 @@ NOCAPTCHA = True
 
 
 if DEBUG:
+   EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+   EMAIL_FILE_PATH = '/tmp/'
+#   EMAIL_HOST = '10.14.33.81'
    INTERNAL_IPS = ('127.0.0.1', 'localhost',)
    MIDDLEWARE += (
        'debug_toolbar.middleware.DebugToolbarMiddleware',
