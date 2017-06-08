@@ -3,6 +3,7 @@ from django.utils.crypto import get_random_string
 from django.contrib import messages
 from django.utils import timezone
 from django.utils.translation import ugettext as _
+from django.http import JsonResponse,HttpResponseRedirect, HttpResponse
 import mistune
 
 from .models import Offer, Item, OrderDate, Order, OrderItem
@@ -54,19 +55,33 @@ def order(request):
     return render(request, 'veggie/order.html', context)
 
 
-def orderDetails(request, orderdateid):
+def _get_order_for_orderdateid(orderdateid):
     queryset = OrderDate.objects.filter(status=True)
     orderdate = get_object_or_404(queryset, pk=orderdateid)
-    orders = orderdate.order_set.filter(order_confirmed=True)
+    orders = orderdate.order_set.all()
+    orders_list = list()
+
     if len(orders) > 0:
-        orderitems = orders[0].orderitem_set.all()
-#        logging.error(orders)
-        context = {'orders': orders, 'orderitems': orderitems}
+        for item in orders:
+            ordersum = 0
+            ois = item.orderitem_set.all()
+            orderitems = list()
+            for oi in ois:
+                ordersum += oi.amount*oi.item.item_price
+                orderitems.append(dict(description=oi.item.item_description, amount=oi.amount, price=oi.item.item_price, unitsize=oi.item.item_unitsize, itemsum=oi.item.item_price*oi.amount))
+            order_dict = dict(id=item.id, name=item.order_name, surname=item.order_surname, phone=item.order_phone, email=item.order_email, status=item.order_confirmed, confirmhash=item.order_confirm_hash, ordersum=ordersum, orderitems=orderitems)
+            orders_list.append(order_dict)
+    return orders_list
+
+
+def orderDetails(request, orderdateid):
+    orders_list = _get_order_for_orderdateid(orderdateid)
+    if len(orders_list) > 0:
+        context = {'orders': orders_list, 'orderdateid': orderdateid}
         return render(request, 'veggie/orderdetail.html', context)
     else:
         messages.add_message(request, messages.INFO, _('No orders found' ))
         return redirect('order')
-
 
 
 def confirmOrder(request, confirmhash):
@@ -77,4 +92,70 @@ def confirmOrder(request, confirmhash):
         offer.order_confirmed = True
         offer.save()
         messages.add_message(request, messages.SUCCESS, _('Order successfully confirmed'))
-    return render(request, 'veggie/confirm.html', {})
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+def downloadxls(request, orderdateid):
+    queryset = OrderDate.objects.filter(status=True)
+    orderdate = get_object_or_404(queryset, pk=orderdateid)
+    response = HttpResponse(content_type='application/vnd.ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="bestellung_%s.xlsx"'%(orderdate.order_date)
+
+    import xlsxwriter
+    from io import BytesIO
+
+    buffer = BytesIO()
+
+    workbook = xlsxwriter.Workbook(buffer)
+    worksheet = workbook.add_worksheet()
+    format_center_bold = workbook.add_format()
+    format_center_bold.set_align('center')
+    format_center_bold.set_bold()
+
+    format_wrap = workbook.add_format()
+    format_wrap.set_text_wrap()
+    worksheet.write(0, 0, _("Name"), format_center_bold)
+    worksheet.write(0, 1, _("Telephone"), format_center_bold)
+    worksheet.write(0, 2, _("Email"), format_center_bold)
+    worksheet.write(0, 3, _("Sum"), format_center_bold)
+    worksheet.write(0, 4, _("Items"), format_center_bold)
+    worksheet.write(0, 5, _("Done"), format_center_bold)
+    row = 1
+    col_length = dict(col0=10, col1=10, col2=20, col4=30)
+
+    orders_list = _get_order_for_orderdateid(orderdateid)
+    for item in orders_list:
+        if not item["status"]:
+            continue
+        worksheet.write(row, 0, "%s, %s" % (item["surname"], item["name"]))
+        if len("%s, %s" % (item["surname"], item["name"])) > col_length["col0"]:
+            col_length["col0"] = len("%s, %s" % (item["surname"], item["name"]))
+        worksheet.write(row, 1, item["phone"])
+        if len(item["phone"]) > col_length["col1"]:
+            col_length["col1"] = len(item["phone"])
+        worksheet.write(row, 2, item["email"])
+        if len(item["email"]) > col_length["col2"]:
+            col_length["col2"] = len(item["email"])
+        worksheet.write(row, 3, item["ordersum"])
+        worksheet.write(row, 5, "")
+
+        items = ""
+        for oi in item["orderitems"]:
+            line = "%s-%s%s-%s-%s EUR\n"%(oi["description"],oi["price"],oi["unitsize"],oi["amount"],oi["itemsum"])
+            if len(line) > col_length["col4"]:
+                col_length["col4"] = len(line)
+            items+= line
+        worksheet.write(row, 4, items, format_wrap)
+        row += 1
+
+    worksheet.set_column(0,0, col_length["col0"]+2)
+    worksheet.set_column(1,1, col_length["col1"]+2)
+    worksheet.set_column(2,2, col_length["col2"]+2)
+    worksheet.set_column(4,4, col_length["col4"]+2)
+
+    worksheet.autofilter(0,0,0,4)
+    workbook.close()
+    result = buffer.getvalue()
+    buffer.close()
+    response.write(result)
+    return response 

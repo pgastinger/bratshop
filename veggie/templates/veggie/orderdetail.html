@@ -1,36 +1,40 @@
 {% extends 'veggie/base.html' %}
 {% load bootstrap3 %}
 {% load i18n %}
-{% load mathfilters %}
 
 {% block title %}
-    Order Details
+    {% trans "Order Details" %}
 {% endblock %}
 
 {% block content %}
 
-{% if orders.count > 0 %}
+<a href="{% url "order" %}">{% trans "back" %}</a>
+<br/>
+<a href="{% url "downloadxls" orderdateid %}">{% trans "Download xls-file with confirmed orders" %}</a>
 
-<a href="{% url "order" %}">back</a>
 <table class="table table-striped">
 <thead>
-<tr><th>Name</th><th>Telephone</th><th>Email</th><th>Items</th></tr>
+<tr><th>{% trans "Name" %}</th><th>{% trans "Telephone" %}</th><th>{% trans "Email" %}</th><th>{% trans "Status" %}</th><th>{% trans "Items" %}</th></tr>
 </thead>
 <tbody>
 {% for order in orders %}
 <tr>
-
 <td>
-{{order.order_name}} {{order.order_surname}}
+{{order.surname}},
+{{order.name}}
 </td>
 <td>
-{{order.order_phone}}
+{{order.phone}}
 </td>
 <td>
-{{order.order_email}}
+{{order.email}}
 </td>
 <td>
-{{ order.item_set }}
+{% if order.status %}
+<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+{% else %}
+<a href="{% url "confirmOrder" order.confirmhash %}"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
+{% endif %}
 </td>
 <td>
 <table class="table table-striped">
@@ -38,27 +42,26 @@
 <tr><th>{% trans "Amount" %}</th><th>{% trans "Description" %}</th><th>{% trans "Price" %}</th><th>{% trans "Sum" %}</th></tr>
 </thead>
 <tbody>
-{% for oi in orderitems %}
+{% for oi in order.orderitems %}
 <tr>
 <td>
 {{ oi.amount }}
 </td>
 <td>
-{{ oi.item.item_description }}
+{{ oi.description }}
 </td>
 <td>
-{{ oi.item.item_price }}
-{{ oi.item.item_unitsize }}
+{{ oi.price }}
+{{ oi.unitsize }}
 </td>
 <td>
-{{ oi.item.item_price|mul:oi.amount }}
-
+{{ oi.itemsum }}
 </td>
 </tr>
 {% endfor %}
 </tbody>
 <tfoot>
-<tr><td colspan="3">{% trans "Sum" %}</td><td></td></tr>
+<tr><td colspan="3">{% trans "Sum" %}</td><td>{{order.ordersum}}</td></tr>
 </tfoot>
 </table>
 </td>
@@ -66,15 +69,5 @@
 {% endfor %}
 </tbody>
 </table>
-
-{% else %}
-
-No orders yet
-<br/>
-
-<a href="{% url "order" %}">back</a>
-
-{% endif %}
-
 
 {% endblock %}
