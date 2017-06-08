@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'captcha',
     'bootstrap3',
+    'mathfilters',
 ]
 
 MIDDLEWARE = [

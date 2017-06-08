@@ -1,5 +1,7 @@
 {% extends 'veggie/base.html' %}
 {% load bootstrap3 %}
+{% load i18n %}
+{% load mathfilters %}
 
 {% block title %}
     Order Details
@@ -31,12 +33,33 @@
 {{ order.item_set }}
 </td>
 <td>
-<table>
+<table class="table table-striped">
+<thead>
+<tr><th>{% trans "Amount" %}</th><th>{% trans "Description" %}</th><th>{% trans "Price" %}</th><th>{% trans "Sum" %}</th></tr>
+</thead>
+<tbody>
 {% for oi in orderitems %}
+<tr>
+<td>
+{{ oi.amount }}
+</td>
+<td>
+{{ oi.item.item_description }}
+</td>
+<td>
+{{ oi.item.item_price }}
+{{ oi.item.item_unitsize }}
+</td>
+<td>
+{{ oi.item.item_price|mul:oi.amount }}
 
-{{ oi }}
-
+</td>
+</tr>
 {% endfor %}
+</tbody>
+<tfoot>
+<tr><td colspan="3">{% trans "Sum" %}</td><td></td></tr>
+</tfoot>
 </table>
 </td>
 </tr>

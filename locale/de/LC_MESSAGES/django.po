@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-07 19:33+0000\n"
+"POT-Creation-Date: 2017-06-08 06:57+0000\n"
 "PO-Revision-Date: 2017-06-07 13:32+0200\n"
 "Last-Translator: Peter Gastinger <peter.gastinger@r-it.at>\n"
 "Language-Team: \n"
@@ -18,57 +18,86 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 1.8.11\n"
 
-#: bratshop/settings.py:123
+#: bratshop/settings.py:124
 msgid "English"
 msgstr "Englisch"
 
-#: bratshop/settings.py:124
+#: bratshop/settings.py:125
 msgid "German"
 msgstr "Deutsch"
 
-#: veggie/forms.py:7
+#: veggie/forms.py:8
 msgid "First Name"
 msgstr "Vorname"
 
-#: veggie/forms.py:8
+#: veggie/forms.py:9
 msgid "Surname"
 msgstr "Nachname"
 
-#: veggie/forms.py:9
+#: veggie/forms.py:10
 msgid "Email"
 msgstr "E-Mail-Adresse"
 
-#: veggie/forms.py:10
+#: veggie/forms.py:11
 msgid "Phone"
 msgstr "Telefonnummer"
 
-#: veggie/forms.py:15
+#: veggie/forms.py:16
 msgid "Date"
 msgstr "Datum"
+
+#: veggie/forms.py:16
+#, python-format
+msgid "%(orderdate)s (available until %(availabledate)s)"
+msgstr "%(orderdate)s (bestellbar bis %(availabledate)s)"
 
 #: veggie/templates/veggie/detail.html:6
 msgid "New Order"
 msgstr "Neue Bestellung"
 
-#: veggie/templates/veggie/detail.html:16
+#: veggie/templates/veggie/detail.html:15
+msgid "Order Summary"
+msgstr "Bestellübersicht"
+
+#: veggie/templates/veggie/detail.html:20
+#: veggie/templates/veggie/orderdetail.html:38
 msgid "Description"
 msgstr "Beschreibung"
 
-#: veggie/templates/veggie/detail.html:27
+#: veggie/templates/veggie/detail.html:31
 msgid "Customer"
 msgstr "Kunde"
 
-#: veggie/templates/veggie/detail.html:43
+#: veggie/templates/veggie/detail.html:47
 msgid "Shopitems"
 msgstr "Produkte"
 
-#: veggie/templates/veggie/detail.html:66
+#: veggie/templates/veggie/detail.html:70
 msgid "Submit"
 msgstr "Abschicken"
 
-#: veggie/templates/veggie/detail.html:69
+#: veggie/templates/veggie/detail.html:73
 msgid "Reset"
 msgstr "Daten löschen"
+
+#: veggie/templates/veggie/order.html:6
+msgid "Order Overview"
+msgstr "Bestellübersicht"
+
+#: veggie/templates/veggie/orderdetail.html:38
+msgid "Amount"
+msgstr "Menge"
+
+#: veggie/templates/veggie/orderdetail.html:38
+msgid "Price"
+msgstr "Preis"
+
+#: veggie/templates/veggie/orderdetail.html:38
+#: veggie/templates/veggie/orderdetail.html:61
+#, fuzzy
+#| msgid "Submit"
+msgid "Sum"
+msgstr "Abschicken"
 
 #: veggie/views.py:42
 msgid ""
@@ -78,10 +107,14 @@ msgstr ""
 "Bestellung erfolgreich angelegt. Bitte im Bestätigungs-Mail auf den "
 "Bestätigungs-Link klicken."
 
-#: veggie/views.py:70
+#: veggie/views.py:67
+msgid "No orders found"
+msgstr "Keine Bestellungen gefunden"
+
+#: veggie/views.py:75
 msgid "Order already confirmed"
 msgstr "Bestellung bereits bestätigt"
 
-#: veggie/views.py:74
+#: veggie/views.py:79
 msgid "Order successfully confirmed"
 msgstr "Bestellung erfolgreich bestätigt"

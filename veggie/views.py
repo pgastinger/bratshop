@@ -58,10 +58,15 @@ def orderDetails(request, orderdateid):
     queryset = OrderDate.objects.filter(status=True)
     orderdate = get_object_or_404(queryset, pk=orderdateid)
     orders = orderdate.order_set.filter(order_confirmed=True)
-    orderitems = orders[0].orderitem_set.all()
-#    logging.error(orders)
-    context = {'orders': orders, 'orderitems': orderitems}
-    return render(request, 'veggie/orderdetail.html', context)
+    if len(orders) > 0:
+        orderitems = orders[0].orderitem_set.all()
+#        logging.error(orders)
+        context = {'orders': orders, 'orderitems': orderitems}
+        return render(request, 'veggie/orderdetail.html', context)
+    else:
+        messages.add_message(request, messages.INFO, _('No orders found' ))
+        return redirect('order')
+
 
 
 def confirmOrder(request, confirmhash):

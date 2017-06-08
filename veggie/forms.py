@@ -1,7 +1,7 @@
 from django import forms
 from captcha.fields import ReCaptchaField
 
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 import logging
 
 class OrderForm(forms.Form):
@@ -13,7 +13,7 @@ class OrderForm(forms.Form):
 
     def __init__(self, orderdates, *args, **kwargs):
         super(OrderForm, self).__init__(*args, **kwargs)
-        self.fields["data_orderdate"] = forms.ChoiceField(label=_('Date'), choices = [(x.id,x.order_date) for x in orderdates])
+        self.fields["data_orderdate"] = forms.ChoiceField(label=_('Date'), choices = [(x.id,_("%(orderdate)s (available until %(availabledate)s)") % { 'orderdate': x.order_date, 'availabledate': x.available_until}) for x in orderdates])
         shopitems = orderdates[0].offer_id.item_set.all()
         self.images = dict()
         for si in shopitems:
