@@ -1,0 +1,22 @@
+{% extends 'veggie/base.html' %}
+{% load bootstrap3 %}
+
+{% block title %}
+    Available Offers
+{% endblock %}
+
+{% block content %}
+
+{% if available_offers  %}
+
+<ul>
+{% for offer in available_offers %}
+
+<li><a href="{% url 'offerDetail' offer.id %}">{{ offer}}</a></li>
+
+{% endfor %}
+</ul>
+
+{% endif %}
+
+{% endblock %}

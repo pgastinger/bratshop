@@ -1,0 +1,87 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-06-07 19:33+0000\n"
+"PO-Revision-Date: 2017-06-07 13:32+0200\n"
+"Last-Translator: Peter Gastinger <peter.gastinger@r-it.at>\n"
+"Language-Team: \n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.8.11\n"
+
+#: bratshop/settings.py:123
+msgid "English"
+msgstr "Englisch"
+
+#: bratshop/settings.py:124
+msgid "German"
+msgstr "Deutsch"
+
+#: veggie/forms.py:7
+msgid "First Name"
+msgstr "Vorname"
+
+#: veggie/forms.py:8
+msgid "Surname"
+msgstr "Nachname"
+
+#: veggie/forms.py:9
+msgid "Email"
+msgstr "E-Mail-Adresse"
+
+#: veggie/forms.py:10
+msgid "Phone"
+msgstr "Telefonnummer"
+
+#: veggie/forms.py:15
+msgid "Date"
+msgstr "Datum"
+
+#: veggie/templates/veggie/detail.html:6
+msgid "New Order"
+msgstr "Neue Bestellung"
+
+#: veggie/templates/veggie/detail.html:16
+msgid "Description"
+msgstr "Beschreibung"
+
+#: veggie/templates/veggie/detail.html:27
+msgid "Customer"
+msgstr "Kunde"
+
+#: veggie/templates/veggie/detail.html:43
+msgid "Shopitems"
+msgstr "Produkte"
+
+#: veggie/templates/veggie/detail.html:66
+msgid "Submit"
+msgstr "Abschicken"
+
+#: veggie/templates/veggie/detail.html:69
+msgid "Reset"
+msgstr "Daten löschen"
+
+#: veggie/views.py:42
+msgid ""
+"Order added successfully, you have to confirm the order with the sent "
+"confirmation link via email"
+msgstr ""
+"Bestellung erfolgreich angelegt. Bitte im Bestätigungs-Mail auf den "
+"Bestätigungs-Link klicken."
+
+#: veggie/views.py:70
+msgid "Order already confirmed"
+msgstr "Bestellung bereits bestätigt"
+
+#: veggie/views.py:74
+msgid "Order successfully confirmed"
+msgstr "Bestellung erfolgreich bestätigt"

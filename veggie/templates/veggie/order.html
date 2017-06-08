@@ -1,0 +1,39 @@
+{% extends 'veggie/base.html' %}
+{% load bootstrap3 %}
+{% load i18n %}
+
+{% block title %}
+{% trans "Order Overview" %}
+{% endblock %}
+
+{% block content %}
+
+<a href="{% url 'index' %}">Index</a>
+
+<table class="table table-striped">
+<thead>
+<tr><th>Order</th><th>Date</th></tr>
+</thead>
+<tbody>
+{% for order in orders %}
+{% if order.offer_id.status %}
+
+<tr>
+
+<td>
+{{order.offer_id}}
+</td>
+
+<td>
+<a href="{% url 'orderDetails' order.id %}">
+{{order.order_date}}
+</a>
+</td>
+
+</tr> 
+{% endif %}
+{% endfor %}
+</tbody>
+</table>
+
+{% endblock %}

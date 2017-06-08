@@ -1,0 +1,79 @@
+{% extends 'veggie/base.html' %}
+{% load bootstrap3 %}
+{% load i18n %}
+
+{% block title %}
+    {% trans "New Order" %} 
+    <span class="label label-default">{{ offerDetail }}</span>
+    <br/>
+    <br/>
+
+{% endblock %}
+
+{% block content %}
+
+<a href="{% url 'order' %}">{% trans "Order Summary" %}</a>
+<br/>
+<br/>
+
+<div class="panel panel-primary">
+  <div class="panel-heading">{% trans "Description" %}</div>
+  <div class="panel-body">
+{{ description | safe}}
+  </div>
+</div>
+
+
+<form action="#" method="post" role="form">
+  {% csrf_token %}
+
+<div class="panel panel-warning">
+  <div class="panel-heading">{% trans "Customer" %}</div>
+  <div class="panel-body">
+  {% for field in form %}
+    {% if "data_" in field.name %}
+    <div class="form-group">
+        {{ field.errors }}
+        <label class="control-label col-sm-2 col-lg-2">{{ field.label_tag }}</label>
+        {{ field }}
+    </div>
+    {% endif %}
+  {% endfor %}
+  </div>
+</div>
+
+
+<div class="panel panel-default">
+  <div class="panel-heading">{% trans "Shopitems" %}</div>
+  <div class="panel-body">
+  {% for field in form %}
+    {% if "shopitem_" in field.name %}
+    <div class="form-group">
+        {{ field.errors }}
+        <label class="control-label col-sm-5 col-lg-5">{{ field.label_tag }}</label>
+        {{ field }}
+    </div>
+    {% endif %}
+  {% endfor %}
+  </div>
+</div>
+  {% for field in form %}
+    {% if "shopitem_" not in field.name and "data_" not in field.name%}
+        {{field}}
+        <br/>
+    {% endif %}
+  {% endfor %}
+
+  {% buttons %}
+    <button type="submit" class="btn btn-primary">
+      {% bootstrap_icon "star" %} 
+      {% trans "Submit" %}
+    </button>
+    <button type="reset" class="btn">
+      {% trans "Reset" %}
+    </button>
+  {% endbuttons %}
+</form>
+
+
+{% endblock %}
