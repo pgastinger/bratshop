@@ -16,7 +16,8 @@ class OrderForm(forms.Form):
 
     def __init__(self, orderdates, *args, **kwargs):
         super(OrderForm, self).__init__(*args, **kwargs)
-        self.fields["data_orderdate"] = forms.ChoiceField(label=_('Date'), choices = [(x.id,_("%(orderdate)s (available until %(availabledate)s)") % { 'orderdate': x.order_date, 'availabledate': x.available_until}) for x in orderdates], validators=[MinValueValidator(0)])
+        self.fields["data_orderdate"] = forms.ChoiceField(label=_('Date'), choices = [(x.id,_("%(orderdate)s (available until %(availabledate)s)") % { 'orderdate': x.order_date, 'availabledate': x.available_until}) for x in orderdates])
+        #self.fields["data_orderdate"] = forms.ChoiceField(label=_('Date'), choices = [(x.id,_("%(orderdate)s (available until %(availabledate)s)") % { 'orderdate': x.order_date, 'availabledate': x.available_until}) for x in orderdates], validators=[MinValueValidator(0)])
         shopitems = orderdates[0].offer_id.item_set.all()
         self.images = dict()
         for si in shopitems:
