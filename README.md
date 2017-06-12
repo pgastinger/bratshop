@@ -1,6 +1,6 @@
 # bratshop
 
-> This is by far non ready for use in a productive environment!
+> This code is not ready for a productive environment! This can be considered as a prototype/proof of concept.
 
 Usually, during spring, we can order certain vegetables (e.g. asparagus) for specific dates through a word based order form, which we fill out and send to the organizer via email. This organizer extracts each order from each email, generates an Excel sheet and sends all the orders to the local farmer. This farmer will deliver all the ordered items to a central location, where everyone picks up their order and pays with cash. The organizational part is pretty cumbersome and there are probably dozens better ways to handle this. That's why this really simple/basic bratshop (BRAT actually means _Betriebsrat_, the german word for workers council) was originally built using Django. 
 
