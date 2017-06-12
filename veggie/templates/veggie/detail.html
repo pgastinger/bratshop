@@ -33,9 +33,15 @@
   {% for field in form %}
     {% if "data_" in field.name %}
     <div class="form-group">
-        {{ field.errors }}
         <label class="control-label col-sm-2 col-lg-2">{{ field.label_tag }}</label>
         {{ field }}
+        {% if field.errors %}
+            <div class="alert alert-danger" role="alert">
+              <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+              <span class="sr-only">{% trans "Error:" %}</span>
+                {{ field.errors }}
+            </div>
+        {% endif %}
     </div>
     {% endif %}
   {% endfor %}
@@ -49,9 +55,15 @@
   {% for field in form %}
     {% if "shopitem_" in field.name %}
     <div class="form-group">
-        {{ field.errors }}
         <label class="control-label col-sm-5 col-lg-5">{{ field.label_tag }}</label>
         {{ field }}
+        {% if field.errors %}
+            <div class="alert alert-danger" role="alert">
+              <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+              <span class="sr-only">{% trans "Error:" %}</span>
+                {{ field.errors }}
+            </div>
+        {% endif %}
     </div>
     {% endif %}
   {% endfor %}

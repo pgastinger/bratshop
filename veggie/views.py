@@ -43,10 +43,11 @@ def offerDetail(request, id):
                     if orderForm.cleaned_data[shopitem]:
                         itemid = shopitem.replace("shopitem_","")
                         item = offer.item_set.filter(item_status=True).filter(pk=itemid)[0]
-                        oi = OrderItem(oi=neworder, item=item, amount=orderForm.cleaned_data[shopitem])
-                        oi.save()
-                        sum += oi.item.item_price*oi.amount
-                        body += "<tr><td>" + str(oi.item.item_description) +"</td><td>"+ str(oi.amount)+"</td><td>"+str(oi.item.item_price)+ " " + str(oi.item.item_unitsize)+"</td><td>"+str(oi.item.item_price*oi.amount)+"</td></tr>\n"
+                        if orderForm.cleaned_data[shopitem] > 0:
+                            oi = OrderItem(oi=neworder, item=item, amount=orderForm.cleaned_data[shopitem])
+                            oi.save()
+                            sum += oi.item.item_price*oi.amount
+                            body += "<tr><td>" + str(oi.item.item_description) +"</td><td>"+ str(oi.amount)+"</td><td>"+str(oi.item.item_price)+ " " + str(oi.item.item_unitsize)+"</td><td>"+str(oi.item.item_price*oi.amount)+"</td></tr>\n"
             
             body += '<tr><td colspan="3">Sum</td><td>'+str(sum)+' Euro</td></tr>\n'
             body += "</tbody>\n</table>\n\n"
@@ -64,6 +65,10 @@ def offerDetail(request, id):
             email.content_subtype = "html"
             email.send()
             return redirect('index')
+        else:
+            description = mistune.markdown(offer.offer_description)
+            context = {'offerDetail': offer, 'offerItems': items, 'form': orderForm, 'description': description}
+            return render(request, 'veggie/detail.html', context)
     else:
         description = mistune.markdown(offer.offer_description)
         orderForm = OrderForm(orderdates)
