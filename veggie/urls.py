@@ -11,4 +11,5 @@ urlpatterns = [
     url(r'^confirm/([a-zA-Z0-9]+)$', views.confirmOrder, name='confirmOrder'),
     url(r'^downloadxls/$', views.order, name='order'),
     url(r'^downloadxls/([0-9]+)$', views.downloadxls, name='downloadxls'),
+    url(r'^outofsale/$', views.outofsale, name='outofsale'),
 ]

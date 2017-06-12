@@ -25,6 +25,8 @@ def offerDetail(request, id):
     items = offer.item_set.filter(item_status=True) 
     now = timezone.now()
     orderdates = offer.orderdate_set.filter(status=True).filter(available_until__gte=now)
+    if len(orderdates) == 0:
+        return redirect('outofsale')
     if request.method == 'POST':
         orderForm = OrderForm(orderdates, request.POST)
         if orderForm.is_valid():
@@ -189,3 +191,8 @@ def downloadxls(request, orderdateid):
     buffer.close()
     response.write(result)
     return response 
+
+
+def outofsale(request):
+    return render(request, 'veggie/outofsale.html')
+
