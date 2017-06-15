@@ -5,6 +5,7 @@ from django.utils import timezone
 from django.utils.translation import ugettext as _
 from django.http import JsonResponse,HttpResponseRedirect, HttpResponse
 from django.core.mail import EmailMessage
+from django.contrib.auth.decorators import login_required,user_passes_test
 import mistune
 from .models import Offer, Item, OrderDate, Order, OrderItem
 from .forms import OrderForm
@@ -17,7 +18,6 @@ def index(request):
         return redirect('offerDetail',available_offers[0].id)
     context = {'available_offers': available_offers}
     return render(request, 'veggie/index.html', context)
-
 
 def offerDetail(request, id):
     queryset = Offer.objects.filter(status=True)
@@ -78,6 +78,8 @@ def offerDetail(request, id):
         return render(request, 'veggie/detail.html', context)
 
 
+@login_required(login_url='/admin/login/')
+#@user_passes_test(email_check)
 def order(request):
     orders = OrderDate.objects.filter(status=True)
     context = {'orders': orders}
@@ -103,6 +105,7 @@ def _get_order_for_orderdateid(orderdateid):
     return orders_list
 
 
+@login_required(login_url='/admin/login/')
 def orderDetails(request, orderdateid):
     orders_list = _get_order_for_orderdateid(orderdateid)
     if len(orders_list) > 0:
@@ -127,6 +130,7 @@ def confirmOrder(request, confirmhash):
         return redirect('index')
 
 
+@login_required(login_url='/admin/login/')
 def downloadxls(request, orderdateid):
     queryset = OrderDate.objects.filter(status=True)
     orderdate = get_object_or_404(queryset, pk=orderdateid)

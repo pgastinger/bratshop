@@ -6,13 +6,14 @@
     {% trans "New Order" %} 
     <span class="label label-default">{{ offerDetail }}</span>
     <br/>
-    <br/>
 
 {% endblock %}
 
 {% block content %}
 
 <a href="{% url 'order' %}">{% trans "Order Summary" %}</a>
+<br/>
+<a href="/admin/login">{% trans "Login (Admin)" %}</a>
 <br/>
 <br/>
 
