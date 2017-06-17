@@ -1,28 +1,36 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.utils.crypto import get_random_string
-from django.contrib import messages
-from django.utils import timezone
-from django.utils.translation import ugettext as _
-from django.http import JsonResponse,HttpResponseRedirect, HttpResponse
-from django.core.mail import EmailMessage
-from django.contrib.auth.decorators import login_required,user_passes_test
 import mistune
-from .models import Offer, Item, OrderDate, Order, OrderItem
-from .forms import OrderForm
+from django.conf import settings
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.core.mail import EmailMessage
+from django.http import HttpResponseRedirect, HttpResponse
+from django.shortcuts import render, redirect, get_object_or_404
+from django.template.loader import render_to_string
+from django.utils import timezone
+from django.utils.crypto import get_random_string
+from django.utils.translation import ugettext as _
 
-import logging
+from .forms import OrderForm
+from .models import Offer, OrderDate, Order, OrderItem
+
 
 def index(request):
     available_offers = Offer.objects.filter(status=True)
     if len(available_offers) == 1:
-        return redirect('offerDetail',available_offers[0].id)
+        return redirect('offerDetail', available_offers[0].id)
     context = {'available_offers': available_offers}
     return render(request, 'veggie/index.html', context)
+
+
+def renderEmail(host, confirmhash, orderprice, ordered_items):
+    context = {'host': host, 'confirmhash': confirmhash, 'orderprice': orderprice, 'ordered_items': ordered_items}
+    return render_to_string('mail/email.html', context)
+
 
 def offerDetail(request, id):
     queryset = Offer.objects.filter(status=True)
     offer = get_object_or_404(queryset, pk=id)
-    items = offer.item_set.filter(item_status=True) 
+    items = offer.item_set.filter(item_status=True)
     now = timezone.now()
     orderdates = offer.orderdate_set.filter(status=True).filter(available_until__gte=now)
     if len(orderdates) == 0:
@@ -32,37 +40,40 @@ def offerDetail(request, id):
         if orderForm.is_valid():
             confirmhash = get_random_string(length=64)
             edithash = get_random_string(length=64)
-            neworder = Order(order_name=orderForm.cleaned_data.get("data_firstname"),order_date_id=orderForm.cleaned_data.get("data_orderdate"),
-                offer_id=id, order_surname=orderForm.cleaned_data.get("data_surname"), order_phone=orderForm.cleaned_data.get("data_phone"), order_email=orderForm.cleaned_data.get("data_email"), order_confirm_hash=confirmhash, order_edit_hash=edithash)
+            neworder = Order(order_name=orderForm.cleaned_data.get("data_firstname"),
+                             order_date_id=orderForm.cleaned_data.get("data_orderdate"),
+                             offer_id=id, order_surname=orderForm.cleaned_data.get("data_surname"),
+                             order_phone=orderForm.cleaned_data.get("data_phone"),
+                             order_email=orderForm.cleaned_data.get("data_email"), order_confirm_hash=confirmhash,
+                             order_edit_hash=edithash)
             neworder.save()
-            body = '<html>\n<body>\n<a href="localhost:8000/veggie/confirm/%s">Confirm order</a>\n\n'%(confirmhash)
-            body += "<table>\n<thead>\n"
-            body += "<tr><th>Description</th><th>Amount</th><th>Price</th><th>Sum</th></tr>\n"
-            body += "</thead>\n<tbody>\n"
             sum = 0
+            ordered_items = list()
             for shopitem in orderForm.cleaned_data:
                 if shopitem.startswith("shopitem_"):
                     if orderForm.cleaned_data[shopitem]:
-                        itemid = shopitem.replace("shopitem_","")
+                        itemid = shopitem.replace("shopitem_", "")
                         item = offer.item_set.filter(item_status=True).filter(pk=itemid)[0]
                         if orderForm.cleaned_data[shopitem] > 0:
                             oi = OrderItem(oi=neworder, item=item, amount=orderForm.cleaned_data[shopitem])
                             oi.save()
-                            sum += oi.item.item_price*oi.amount
-                            body += "<tr><td>" + str(oi.item.item_description) +"</td><td>"+ str(oi.amount)+"</td><td>"+str(oi.item.item_price)+ " " + str(oi.item.item_unitsize)+"</td><td>"+str(oi.item.item_price*oi.amount)+"</td></tr>\n"
-            
-            body += '<tr><td colspan="3">Sum</td><td>'+str(sum)+' Euro</td></tr>\n'
-            body += "</tbody>\n</table>\n\n"
-            body += "<b>If this order was not submitted by you or you reconsidered, just ignore this mail</b>"
-            body += "</body>\n</html>"
-            messages.add_message(request, messages.INFO, _('Order added successfully, you have to confirm the order with the sent confirmation link via email'))
+                            sum += oi.item.item_price * oi.amount
+                            order_items_dict = dict(description=oi.item.item_description, amount=oi.amount,
+                                                    item_price=oi.item.item_price,
+                                                    item_unit_size=oi.item.item_unitsize,
+                                                    item_sum=oi.item.item_price * oi.amount)
+                            ordered_items.append(order_items_dict)
+
+            messages.add_message(request, messages.INFO, _(
+                'Order added successfully, you have to confirm the order with the sent confirmation link via email'))
 
             email = EmailMessage(
-                _("Order -%(description)s- for -%(date)s-, please confirm order")%{"date": neworder.order_date.order_date, 'description':neworder.offer.offer_text},
-                str(body),
+                _("Order -%(description)s- for -%(date)s-, please confirm order") % {
+                    "date": neworder.order_date.order_date, 'description': neworder.offer.offer_text},
+                renderEmail("%s://%s"%(request.scheme, request.META['HTTP_HOST']), confirmhash, sum, ordered_items),
                 'bratshop@do-not-reply.com',
                 [orderForm.cleaned_data.get("data_email")],
-                reply_to=['peter.gastinger@gmail.com'],
+                reply_to=[settings.MAIL_RECIPIENT],
             )
             email.content_subtype = "html"
             email.send()
@@ -79,7 +90,7 @@ def offerDetail(request, id):
 
 
 @login_required(login_url='/admin/login/')
-#@user_passes_test(email_check)
+# @user_passes_test(email_check)
 def order(request):
     orders = OrderDate.objects.filter(status=True)
     context = {'orders': orders}
@@ -98,9 +109,12 @@ def _get_order_for_orderdateid(orderdateid):
             ois = item.orderitem_set.all()
             orderitems = list()
             for oi in ois:
-                ordersum += oi.amount*oi.item.item_price
-                orderitems.append(dict(description=oi.item.item_description, amount=oi.amount, price=oi.item.item_price, unitsize=oi.item.item_unitsize, itemsum=oi.item.item_price*oi.amount))
-            order_dict = dict(id=item.id, name=item.order_name, surname=item.order_surname, phone=item.order_phone, email=item.order_email, status=item.order_confirmed, confirmhash=item.order_confirm_hash, ordersum=ordersum, orderitems=orderitems, orderdate=orderdate.order_date)
+                ordersum += oi.amount * oi.item.item_price
+                orderitems.append(dict(description=oi.item.item_description, amount=oi.amount, price=oi.item.item_price,
+                                       unitsize=oi.item.item_unitsize, itemsum=oi.item.item_price * oi.amount))
+            order_dict = dict(id=item.id, name=item.order_name, surname=item.order_surname, phone=item.order_phone,
+                              email=item.order_email, status=item.order_confirmed, confirmhash=item.order_confirm_hash,
+                              ordersum=ordersum, orderitems=orderitems, orderdate=orderdate.order_date)
             orders_list.append(order_dict)
     return orders_list
 
@@ -112,7 +126,7 @@ def orderDetails(request, orderdateid):
         context = {'orders': orders_list, 'orderdateid': orderdateid}
         return render(request, 'veggie/orderdetail.html', context)
     else:
-        messages.add_message(request, messages.INFO, _('No orders found' ))
+        messages.add_message(request, messages.INFO, _('No orders found'))
         return redirect('order')
 
 
@@ -135,7 +149,7 @@ def downloadxls(request, orderdateid):
     queryset = OrderDate.objects.filter(status=True)
     orderdate = get_object_or_404(queryset, pk=orderdateid)
     response = HttpResponse(content_type='application/vnd.ms-excel')
-    response['Content-Disposition'] = 'attachment; filename="bestellung_%s.xlsx"'%(orderdate.order_date)
+    response['Content-Disposition'] = 'attachment; filename="bestellung_%s.xlsx"' % (orderdate.order_date)
 
     import xlsxwriter
     from io import BytesIO
@@ -177,26 +191,25 @@ def downloadxls(request, orderdateid):
 
         items = ""
         for oi in item["orderitems"]:
-            line = "%s-%s%s-%s-%s EUR\n"%(oi["description"],oi["price"],oi["unitsize"],oi["amount"],oi["itemsum"])
+            line = "%s-%s%s-%s-%s EUR\n" % (oi["description"], oi["price"], oi["unitsize"], oi["amount"], oi["itemsum"])
             if len(line) > col_length["col4"]:
                 col_length["col4"] = len(line)
-            items+= line
+            items += line
         worksheet.write(row, 4, items.rstrip(), format_wrap)
         row += 1
 
-    worksheet.set_column(0,0, col_length["col0"]+2)
-    worksheet.set_column(1,1, col_length["col1"]+2)
-    worksheet.set_column(2,2, col_length["col2"]+2)
-    worksheet.set_column(4,4, col_length["col4"]+2)
+    worksheet.set_column(0, 0, col_length["col0"] + 2)
+    worksheet.set_column(1, 1, col_length["col1"] + 2)
+    worksheet.set_column(2, 2, col_length["col2"] + 2)
+    worksheet.set_column(4, 4, col_length["col4"] + 2)
 
-    worksheet.autofilter(0,0,0,4)
+    worksheet.autofilter(0, 0, 0, 4)
     workbook.close()
     result = buffer.getvalue()
     buffer.close()
     response.write(result)
-    return response 
+    return response
 
 
 def outofsale(request):
     return render(request, 'veggie/outofsale.html')
-

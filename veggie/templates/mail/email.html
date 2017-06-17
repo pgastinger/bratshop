@@ -1,0 +1,48 @@
+{% load i18n %}
+<html>
+<head>
+    <title>{% trans "Confirm order" %}</title>
+</head>
+<body>
+
+<b>{% trans "If this order was not submitted by you or you reconsidered, just ignore this mail" %}</b>
+
+<br/>
+<br/>
+
+<a href="{{ host }}/veggie/confirm/{{ confirmhash }}">{% trans "Confirm order" %}</a>
+
+<br/>
+<br/>
+
+<table border="1">
+    <thead>
+        <tr>
+            <th>{% trans "Description" %}</th>
+            <th>{% trans "Amount" %}</th>
+            <th>{% trans "Price" %}</th>
+            <th>{% trans "Sum" %}</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for item in ordered_items %}
+        <tr>
+            <td>{{ item.description }}</td>
+            <td>{{ item.amount }}</td>
+            <td>{{ item.item_price }} {{ item.item_unit_size }}</td>
+            <td>{{ item.item_sum }} Euro</td>
+        </tr>
+    {% endfor %}
+        <tr>
+            <td colspan="3">{% trans "Sum" %}</td>
+            <td>{{ orderprice }} Euro</td>
+        </tr>
+    </tbody>
+</table>
+
+<br/>
+
+<b>{% trans "If this order was not submitted by you or you reconsidered, just ignore this mail" %}</b>
+
+</body>
+</html>

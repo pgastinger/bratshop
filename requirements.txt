@@ -1,0 +1,7 @@
+django
+mistune
+XlsxWriter
+Pillow
+django-recaptcha
+django-debug-toolbar
+django-bootstrap3

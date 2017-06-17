@@ -28,7 +28,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["127.0.0.1","localhost"]
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -138,7 +137,7 @@ RECAPTCHA_PUBLIC_KEY = '6LdagyQUAAAAAA2R2gXftNYSA8pVPsE2ZsHW7fsl'
 RECAPTCHA_PRIVATE_KEY = '6LdagyQUAAAAAC85PKwHs6XI2smNhxLIwUcmZGm5'
 NOCAPTCHA = True
 
-
+MAIL_RECIPIENT = "peter.gastinger@gmail.com"
 
 if DEBUG:
    EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
