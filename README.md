@@ -1,4 +1,4 @@
-# bBratshop
+# Bratshop
 
 > This code is not ready for a productive environment! This can be considered as a prototype/proof of concept.
 
