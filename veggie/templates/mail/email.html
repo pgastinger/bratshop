@@ -1,7 +1,7 @@
 {% load i18n %}
 <html>
 <head>
-    <title>{% trans "Confirm order" %}</title>
+    <title>{% trans "Confirm order for " %} {{ orderdate }}</title>
 </head>
 <body>
 
@@ -10,7 +10,7 @@
 <br/>
 <br/>
 
-<a href="{{ host }}/veggie/confirm/{{ confirmhash }}">{% trans "Confirm order" %}</a>
+<a href="{{ host }}/veggie/confirm/{{ confirmhash }}">{% trans "Confirm order for " %} {{ orderdate }}</a>
 
 <br/>
 <br/>
@@ -34,13 +34,18 @@
         </tr>
     {% endfor %}
         <tr>
-            <td colspan="3">{% trans "Sum" %}</td>
+            <td colspan="3">{% trans "Total amount" %}</td>
             <td>{{ orderprice }} Euro</td>
         </tr>
     </tbody>
 </table>
 
 <br/>
+
+{{ orderdescription | safe }}
+
+<br/>
+
 
 <b>{% trans "If this order was not submitted by you or you reconsidered, just ignore this mail" %}</b>
 

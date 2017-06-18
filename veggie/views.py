@@ -22,8 +22,9 @@ def index(request):
     return render(request, 'veggie/index.html', context)
 
 
-def renderEmail(host, confirmhash, orderprice, ordered_items):
-    context = {'host': host, 'confirmhash': confirmhash, 'orderprice': orderprice, 'ordered_items': ordered_items}
+def renderEmail(host, confirmhash, orderprice, ordered_items, orderdate, orderdescription):
+    context = {'host': host, 'confirmhash': confirmhash, 'orderprice': orderprice, 'ordered_items': ordered_items,
+               'orderdate': orderdate, 'orderdescription': orderdescription}
     return render_to_string('mail/email.html', context)
 
 
@@ -39,13 +40,12 @@ def offerDetail(request, id):
         orderForm = OrderForm(orderdates, request.POST)
         if orderForm.is_valid():
             confirmhash = get_random_string(length=64)
-            edithash = get_random_string(length=64)
             neworder = Order(order_name=orderForm.cleaned_data.get("data_firstname"),
                              order_date_id=orderForm.cleaned_data.get("data_orderdate"),
                              offer_id=id, order_surname=orderForm.cleaned_data.get("data_surname"),
                              order_phone=orderForm.cleaned_data.get("data_phone"),
                              order_email=orderForm.cleaned_data.get("data_email"), order_confirm_hash=confirmhash,
-                             order_edit_hash=edithash)
+                             add_date=now)
             neworder.save()
             sum = 0
             ordered_items = list()
@@ -70,7 +70,8 @@ def offerDetail(request, id):
             email = EmailMessage(
                 _("Order -%(description)s- for -%(date)s-, please confirm order") % {
                     "date": neworder.order_date.order_date, 'description': neworder.offer.offer_text},
-                renderEmail("%s://%s"%(request.scheme, request.META['HTTP_HOST']), confirmhash, sum, ordered_items),
+                renderEmail("%s://%s" % (request.scheme, request.META['HTTP_HOST']), confirmhash, sum, ordered_items,
+                            neworder.order_date.order_date, mistune.markdown(offer.offer_description)),
                 'bratshop@do-not-reply.com',
                 [orderForm.cleaned_data.get("data_email")],
                 reply_to=[settings.MAIL_RECIPIENT],
@@ -136,6 +137,7 @@ def confirmOrder(request, confirmhash):
         messages.add_message(request, messages.INFO, _('Order already confirmed'))
     else:
         offer.order_confirmed = True
+        offer.confirm_date = timezone.now()
         offer.save()
         messages.add_message(request, messages.SUCCESS, _('Order successfully confirmed'))
     if request.META.get('HTTP_REFERER'):
@@ -167,7 +169,7 @@ def downloadxls(request, orderdateid):
     worksheet.write(0, 0, _("Name"), format_center_bold)
     worksheet.write(0, 1, _("Telephone"), format_center_bold)
     worksheet.write(0, 2, _("Email"), format_center_bold)
-    worksheet.write(0, 3, _("Sum"), format_center_bold)
+    worksheet.write(0, 3, _("Total Amount"), format_center_bold)
     worksheet.write(0, 4, _("Items"), format_center_bold)
     worksheet.write(0, 5, _("Done"), format_center_bold)
     row = 1

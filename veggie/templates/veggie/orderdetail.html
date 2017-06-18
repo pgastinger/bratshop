@@ -39,7 +39,7 @@
 <td>
 <table class="table table-striped">
 <thead>
-<tr><th>{% trans "Amount" %}</th><th>{% trans "Description" %}</th><th>{% trans "Price" %}</th><th>{% trans "Sum" %}</th></tr>
+<tr><th>{% trans "Amount" %}</th><th>{% trans "Description" %}</th><th>{% trans "Price" %}</th><th>{% trans "Total amount" %}</th></tr>
 </thead>
 <tbody>
 {% for oi in order.orderitems %}
@@ -61,7 +61,7 @@
 {% endfor %}
 </tbody>
 <tfoot>
-<tr><td colspan="3">{% trans "Sum" %}</td><td>{{order.ordersum}}</td></tr>
+<tr><td colspan="3">{% trans "Total amount" %}</td><td>{{order.ordersum}}</td></tr>
 </tfoot>
 </table>
 </td>

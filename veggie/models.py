@@ -1,5 +1,6 @@
 from django.db import models
 
+
 # Create your models here.
 class Offer(models.Model):
     offer_text = models.CharField(max_length=200)
@@ -21,7 +22,8 @@ class Item(models.Model):
     change_date = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return "item: %s | offer: %s | price: %s %s"%(self.item_description, self.offer, self.item_price, self.item_unitsize)
+        return "item: %s | offer: %s | price: %s %s" % (
+        self.item_description, self.offer, self.item_price, self.item_unitsize)
 
 
 class OrderDate(models.Model):
@@ -44,8 +46,8 @@ class Order(models.Model):
     order_email = models.EmailField()
     order_confirmed = models.BooleanField(default=False)
     order_confirm_hash = models.CharField(max_length=64)
-    order_edit_hash = models.CharField(max_length=64)
-    add_date = models.DateTimeField(auto_now_add=True)
+    add_date = models.DateTimeField()
+    confirm_date = models.DateTimeField(null=True)
 
     def __str__(self):
         return str(self.order_date)
@@ -57,4 +59,4 @@ class OrderItem(models.Model):
     amount = models.IntegerField()
 
     def __str__(self):
-        return "item: %s | amount: %s"%(self.item, self.amount) 
+        return "item: %s | amount: %s" % (self.item, self.amount)

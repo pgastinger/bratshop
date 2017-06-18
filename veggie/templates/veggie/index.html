@@ -9,7 +9,7 @@
 {% block content %}
 
 {% if available_offers  %}
-
+<br/>
 <ul>
 {% for offer in available_offers %}
 
@@ -17,6 +17,22 @@
 
 {% endfor %}
 </ul>
+<br/>
+{% endif %}
+
+<h3>{% trans "Links" %}</h3>
+<a href="{% url 'order' %}">{% trans "Order Summary" %}</a>
+<br/>
+
+{% if not user.is_authenticated %}
+
+<a href="/admin/login">{% trans "Login (Admin)" %}</a>
+<br/>
+
+{% else %}
+
+<a href="/admin">{% trans "Administration interface" %}</a>
+<br/>
 
 {% endif %}
 
