@@ -25,5 +25,8 @@ class OrderForm(forms.Form):
         for si in shopitems:
             key = "shopitem_%d" % (si.id)
             descr = '%s (%s %s)' % (si.item_description, si.item_price, si.item_unitsize)
-            self.fields[key] = forms.IntegerField(label=descr, required=False, initial=0, help_text=si.item_image.url,
+            url = ""
+            if si.item_image and hasattr(si.item_image,"url"):
+                url = si.item_image.url
+            self.fields[key] = forms.IntegerField(label=descr, required=False, initial=0, help_text=url,
                                                   validators=[MinValueValidator(0), MaxValueValidator(10)])

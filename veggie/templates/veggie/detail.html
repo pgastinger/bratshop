@@ -1,7 +1,6 @@
 {% extends 'veggie/base.html' %}
 {% load bootstrap3 %}
 {% load i18n %}
-{% load static from staticfiles %}
 
 {% block title %}
     {% trans "New Order" %} 
@@ -66,14 +65,11 @@
   {% for field in form %}
     {% if "shopitem_" in field.name %}
     <div class="form-group">
+        {% if field.help_text != "" %}
+        <img src="{{ field.help_text }}" alt="{{ field.help_text }}" class="img-responsive" width="250px"/>
+        {% endif %}
         <label class="control-label col-sm-5 col-lg-5">{{ field.label_tag }}</label>
         {{ field }}
-        {% if field.help_text != "media" %}
-        <b>
-
-        <img src="{% static field.help_text %}" alt="{{ field.help_text }}"/>
-        </b>
-        {% endif %}
         {% if field.errors %}
             <div class="alert alert-danger" role="alert">
               <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
