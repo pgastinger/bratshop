@@ -115,7 +115,8 @@ def _get_order_for_orderdateid(orderdateid):
                                        unitsize=oi.item.item_unitsize, itemsum=oi.item.item_price * oi.amount))
             order_dict = dict(id=item.id, name=item.order_name, surname=item.order_surname, phone=item.order_phone,
                               email=item.order_email, status=item.order_confirmed, confirmhash=item.order_confirm_hash,
-                              ordersum=ordersum, orderitems=orderitems, orderdate=orderdate.order_date)
+                              ordersum=ordersum, orderitems=orderitems, orderdate=orderdate.order_date, 
+                              add_date=item.add_date, confirm_date=item.confirm_date)
             orders_list.append(order_dict)
     return orders_list
 
@@ -169,11 +170,12 @@ def downloadxls(request, orderdateid):
     worksheet.write(0, 0, _("Name"), format_center_bold)
     worksheet.write(0, 1, _("Telephone"), format_center_bold)
     worksheet.write(0, 2, _("Email"), format_center_bold)
-    worksheet.write(0, 3, _("Total Amount"), format_center_bold)
-    worksheet.write(0, 4, _("Items"), format_center_bold)
-    worksheet.write(0, 5, _("Done"), format_center_bold)
+    worksheet.write(0, 3, _("Added/Confirmed"), format_center_bold)
+    worksheet.write(0, 4, _("Total Amount"), format_center_bold)
+    worksheet.write(0, 5, _("Items"), format_center_bold)
+    worksheet.write(0, 6, _("Done"), format_center_bold)
     row = 1
-    col_length = dict(col0=10, col1=10, col2=20, col4=30)
+    col_length = dict(col0=10, col1=10, col2=20, col3=30, col4=30)
 
     orders_list = _get_order_for_orderdateid(orderdateid)
     for item in orders_list:
@@ -188,8 +190,12 @@ def downloadxls(request, orderdateid):
         worksheet.write(row, 2, item["email"])
         if len(item["email"]) > col_length["col2"]:
             col_length["col2"] = len(item["email"])
-        worksheet.write(row, 3, item["ordersum"])
-        worksheet.write(row, 5, "")
+        worksheet.write(row, 2, item["email"])
+        if len(str(item["add_date"])+"/"+str(item["confirm_date"])) > col_length["col3"]:
+            col_length["col3"] = len(str(item["add_date"])+"/"+str(item["confirm_date"]))
+        worksheet.write(row, 3, str(item["add_date"])+"/"+str(item["confirm_date"]))
+        worksheet.write(row, 4, item["ordersum"])
+        worksheet.write(row, 6, "")
 
         items = ""
         for oi in item["orderitems"]:
@@ -197,15 +203,17 @@ def downloadxls(request, orderdateid):
             if len(line) > col_length["col4"]:
                 col_length["col4"] = len(line)
             items += line
-        worksheet.write(row, 4, items.rstrip(), format_wrap)
+        worksheet.write(row, 5, items.rstrip(), format_wrap)
         row += 1
 
     worksheet.set_column(0, 0, col_length["col0"] + 2)
     worksheet.set_column(1, 1, col_length["col1"] + 2)
     worksheet.set_column(2, 2, col_length["col2"] + 2)
-    worksheet.set_column(4, 4, col_length["col4"] + 2)
+    worksheet.set_column(3, 3, col_length["col3"] + 2)
+    worksheet.set_column(4, 4, 15)
+    worksheet.set_column(5, 5, col_length["col4"] + 2)
 
-    worksheet.autofilter(0, 0, 0, 4)
+    worksheet.autofilter(0, 0, 0, 5)
     workbook.close()
     result = buffer.getvalue()
     buffer.close()

@@ -1,33 +1,40 @@
 {% extends 'veggie/base.html' %}
 {% load bootstrap3 %}
 {% load i18n %}
+{% load static %}
 
 {% block title %}
     {% trans "Order Details" %}
 {% endblock %}
 
 {% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'veggie/css/datatables.min.css' %}" />
 
 <a href="{% url "order" %}">{% trans "back" %}</a>
 <br/>
 <a href="{% url "downloadxls" orderdateid %}">{% trans "Download xls-file with confirmed orders" %}</a>
+<br/>
+<br/>
 
-<table class="table table-striped">
+<table id="datatable" class="table table-striped">
 <thead>
-<tr><th>{% trans "Name" %}</th><th>{% trans "Telephone" %}</th><th>{% trans "Email" %}</th><th>{% trans "Status" %}</th><th>{% trans "Items" %}</th></tr>
+<tr><th>{% trans "Name" %}</th><th>{% trans "Telephone" %}</th><th>{% trans "Email" %}</th><th>{% trans "Added/Confirmed" %}</th><th>{% trans "Status" %}</th><th>{% trans "Items" %}</th></tr>
 </thead>
 <tbody>
 {% for order in orders %}
 <tr>
 <td>
-{{order.surname}},
-{{order.name}}
+{{ order.surname }},
+{{ order.name }}
 </td>
 <td>
-{{order.phone}}
+{{ order.phone }}
 </td>
 <td>
-{{order.email}}
+{{ order.email }}
+</td>
+<td>
+{{ order.add_date }}/{{ order.confirm_date }}
 </td>
 <td>
 {% if order.status %}
@@ -69,5 +76,14 @@
 {% endfor %}
 </tbody>
 </table>
+
+<!-- The javascript =============================== -->
+<script type="text/javascript" src="{% static 'veggie/js/datatables.min.js' %}" />
+<script type="text/javascript"  charset="utf-8">
+ $(document).ready(function() {
+    $.noConflict();
+    $('#datatable').DataTable();
+ } );
+</script>
 
 {% endblock %}

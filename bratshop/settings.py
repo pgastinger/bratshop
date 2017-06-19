@@ -73,6 +73,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'bratshop.wsgi.application'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_URL = '/static/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'upload')
+MEDIA_URL = '/upload/'
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
@@ -131,7 +134,6 @@ LOCALE_PATHS = (
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
-STATIC_URL = '/static/'
 
 RECAPTCHA_PUBLIC_KEY = '6LdagyQUAAAAAA2R2gXftNYSA8pVPsE2ZsHW7fsl'
 RECAPTCHA_PRIVATE_KEY = '6LdagyQUAAAAAC85PKwHs6XI2smNhxLIwUcmZGm5'
