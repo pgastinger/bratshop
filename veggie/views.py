@@ -16,6 +16,8 @@ from .models import Offer, OrderDate, Order, OrderItem
 
 def index(request):
     available_offers = Offer.objects.filter(status=True)
+    if len(available_offers) == 0:
+        return redirect('outofsale')
     if len(available_offers) == 1:
         return redirect('offerDetail', available_offers[0].id)
     context = {'available_offers': available_offers}
@@ -91,7 +93,6 @@ def offerDetail(request, id):
 
 
 @login_required(login_url='/admin/login/')
-# @user_passes_test(email_check)
 def order(request):
     orders = OrderDate.objects.filter(status=True)
     context = {'orders': orders}
