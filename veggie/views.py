@@ -13,7 +13,6 @@ from django.utils.translation import ugettext as _
 from .forms import OrderForm
 from .models import Offer, OrderDate, Order, OrderItem
 
-
 def index(request):
     available_offers = Offer.objects.filter(status=True)
     if len(available_offers) == 0:
@@ -72,7 +71,7 @@ def offerDetail(request, id):
             email = EmailMessage(
                 _("Order -%(description)s- for -%(date)s-, please confirm order") % {
                     "date": neworder.order_date.order_date, 'description': neworder.offer.offer_text},
-                renderEmail("%s://%s" % (request.scheme, request.META['HTTP_HOST']), confirmhash, sum, ordered_items,
+                renderEmail("%s://%s" % (request.scheme, request.META.get('HTTP_HOST','localhost')), confirmhash, sum, ordered_items,
                             neworder.order_date.order_date, mistune.markdown(offer.offer_description)),
                 'bratshop@do-not-reply.com',
                 [orderForm.cleaned_data.get("data_email")],
@@ -116,7 +115,7 @@ def _get_order_for_orderdateid(orderdateid):
                                        unitsize=oi.item.item_unitsize, itemsum=oi.item.item_price * oi.amount))
             order_dict = dict(id=item.id, name=item.order_name, surname=item.order_surname, phone=item.order_phone,
                               email=item.order_email, status=item.order_confirmed, confirmhash=item.order_confirm_hash,
-                              ordersum=ordersum, orderitems=orderitems, orderdate=orderdate.order_date, 
+                              ordersum=ordersum, orderitems=orderitems, orderdate=orderdate.order_date,
                               add_date=item.add_date, confirm_date=item.confirm_date)
             orders_list.append(order_dict)
     return orders_list
@@ -192,9 +191,9 @@ def downloadxls(request, orderdateid):
         if len(item["email"]) > col_length["col2"]:
             col_length["col2"] = len(item["email"])
         worksheet.write(row, 2, item["email"])
-        if len(str(item["add_date"])+"/"+str(item["confirm_date"])) > col_length["col3"]:
-            col_length["col3"] = len(str(item["add_date"])+"/"+str(item["confirm_date"]))
-        worksheet.write(row, 3, str(item["add_date"])+"/"+str(item["confirm_date"]))
+        if len(str(item["add_date"]) + "/" + str(item["confirm_date"])) > col_length["col3"]:
+            col_length["col3"] = len(str(item["add_date"]) + "/" + str(item["confirm_date"]))
+        worksheet.write(row, 3, str(item["add_date"]) + "/" + str(item["confirm_date"]))
         worksheet.write(row, 4, item["ordersum"])
         worksheet.write(row, 6, "")
 

@@ -1,11 +1,15 @@
 import datetime
 
-from django.test import TestCase
-from django.utils import timezone
+from django.contrib.auth.models import User
 from django.test import Client
+from django.test import TestCase
+
+from django.utils import timezone
 
 from .models import Offer, OrderDate, Order, OrderItem, Item
 
+
+print("Do not forget to change setting UNITTEST to True to disable Captcha verification!!!\n")
 
 def setUP():
     # available items and dates
@@ -24,9 +28,10 @@ def setUP():
 
     order1 = Order.objects.create(offer=o1, order_date=od2, order_name="Peter", order_surname="Gastinger",
                                   order_phone="0043500800", order_email="peter.gastinger@mailinator.com",
-                                  add_date=timezone.now())
+                                  add_date=timezone.now(), order_confirm_hash="topsecretconfirmhash")
     OrderItem.objects.create(oi=order1, item=it1, amount=10)
     OrderItem.objects.create(oi=order1, item=it2, amount=20)
+    User.objects.create_superuser('root', 'peter.gastinger@mailinator.com', "t0pS3cret!")
 
 
 class ModelTests(TestCase):
@@ -100,7 +105,12 @@ class ViewTests(TestCase):
         self.assertEquals(response.status_code, 200)
         self.assertIn("My Test Offer #1", str(response.content))
 
-    def test_03_Index_Multiple(self):
+    def test_03_Index_Single_NotFound(self):
+        response = self.client.get('/veggie/666')
+        self.assertEquals(response.status_code, 404)
+
+    def test_04_Index_Multiple(self):
+        o = Offer.objects.filter(status=False).first()
         o = Offer.objects.filter(status=False).first()
         o.status = True
         o.save()
@@ -109,10 +119,66 @@ class ViewTests(TestCase):
         self.assertIn("My Test Offer #1", str(response.content)) and self.assertIn("My Test Offer #2",
                                                                                    str(response.content))
 
-    def test_04_OutOfSale(self):
+    def test_05_OutOfSale(self):
         o = Offer.objects.filter(status=True).first()
         o.status = False
         o.save()
         response = self.client.get('/', follow=True)
         self.assertEquals(response.status_code, 200)
         self.assertIn("Out Of Sale", str(response.content))
+
+    def test_06_ConfirmOrder(self):
+        order = Order.objects.filter(order_confirmed=True).all()
+        self.assertEqual(len(order), 0)
+        response = self.client.get('/veggie/confirm/topsecretconfirmhash', follow=True)
+        self.assertEquals(response.status_code, 200)
+        order = Order.objects.filter(order_confirmed=True).all()
+        self.assertEqual(len(order), 1)
+
+    def test_07_Orders_Loginredirect(self):
+        response = self.client.get('/veggie/orders', follow=True)
+        self.assertEquals(response.status_code, 200)
+        self.assertIn("Django administration", str(response.content))
+
+    def test_08_OrderDetails_Loginredirect(self):
+        response = self.client.get('/veggie/confirm/topsecretconfirmhash')
+        response = self.client.get('/veggie/orders/2')
+        self.assertEquals(response.status_code, 302)
+        self.client.login(username="root", password="t0pS3cret!")
+        response = self.client.get('/veggie/orders/2')
+        self.assertEquals(response.status_code, 200)
+
+    def test_09_DownloadXLS_Loginredirect(self):
+        response = self.client.get('/veggie/downloadxls/1')
+        self.assertEquals(response.status_code, 302)
+        self.client.login(username="root", password="t0pS3cret!")
+        response = self.client.get('/veggie/downloadxls/1')
+        self.assertEquals(response.status_code, 200)
+        response = self.client.get('/veggie/downloadxls/666')
+        self.assertEquals(response.status_code, 404)
+
+    def test_10_DownloadXLS_Loginredirect(self):
+        response = self.client.get('/veggie/downloadxls/1')
+        self.assertEquals(response.status_code, 302)
+        self.client.login(username="root", password="t0pS3cret!")
+        response = self.client.get('/veggie/downloadxls/1')
+        self.assertEquals(response.status_code, 200)
+        self.assertIn("application/vnd.ms-excel", str(response._content_type_for_repr))
+
+    def test_11_OfferDetails_Errors(self):
+        response = self.client.get('/veggie/666')
+        self.assertEquals(response.status_code, 404)
+        OrderDate.objects.all().update(status=False)
+        response = self.client.get('/veggie/1')
+        self.assertEquals(response.status_code, 302)
+
+    def test_12_OfferDetails(self):
+        response = self.client.get('/veggie/1')
+        self.assertEquals(response.status_code, 200)
+        response = self.client.post('/veggie/1', {"data_firstname": "Max", "data_surname": "Mustermann",
+                                                  "data_email": "max.mustermann@mailinator.com", "data_orderdate": 2,
+                                                  "data_phone": "0043500888", "shopitem_1": 10, "shopitem_2": 0})
+        order = Order.objects.filter().all()
+        self.assertEqual(len(order), 2)
+        order = Order.objects.filter(order_email="max.mustermann@mailinator.com").all()
+        self.assertEqual(len(order), 1)
