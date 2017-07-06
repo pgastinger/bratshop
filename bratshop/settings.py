@@ -24,10 +24,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'wjcol71f=!#+j1e%2h6w#(tdqi_-qcv_0m7j=)_6aipjfu)3r4'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-#DEBUG = True
-UNITTEST = True
-DEBUG = False
+#DEBUG = False
 #UNITTEST = False
+UNITTEST = True
+DEBUG = True
 
 ALLOWED_HOSTS = ["127.0.0.1","localhost"]
 
@@ -138,17 +138,11 @@ LOCALE_PATHS = (
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 
-RECAPTCHA_PUBLIC_KEY = ''
-RECAPTCHA_PRIVATE_KEY = ''
-MAIL_RECIPIENT = "peter.gastinger@gmail.com"
-# GMAIL settings
-EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'peter.gastinger@gmail.com'
-EMAIL_HOST_PASSWORD = 'lgctelqjmutdgcpt'
-EMAIL_PORT = 587
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+RECAPTCHA_PUBLIC_KEY = '6LdagyQUAAAAAA2R2gXftNYSA8pVPsE2ZsHW7fsl'
+RECAPTCHA_PRIVATE_KEY = '6LdagyQUAAAAAC85PKwHs6XI2smNhxLIwUcmZGm5'
 NOCAPTCHA = True
+
+MAIL_RECIPIENT = "peter.gastinger@gmail.com"
 
 if DEBUG:
    EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
