@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-07-10 12:17+0000\n"
+"POT-Creation-Date: 2017-07-10 12:25+0000\n"
 "PO-Revision-Date: 2017-06-18 11:58+0200\n"
 "Last-Translator: Peter Gastinger <peter.gastinger@r-it.at>\n"
 "Language-Team: \n"
@@ -65,14 +65,12 @@ msgstr ""
 "E-Mail einfach ignorieren."
 
 #: veggie/templates/mail/email.html:13
-#, fuzzy
-#| msgid "Confirm order for "
 msgid "Confirm order for"
 msgstr "Bestellung bestätigen für"
 
 #: veggie/templates/mail/email.html:15
 #, fuzzy
-#| msgid "Confirm order for "
+#| msgid "Confirm order for"
 msgid "Cancel order for"
 msgstr "Bestellung bestätigen für"
 
@@ -155,7 +153,7 @@ msgstr "Verfügbare Angebote"
 
 #: veggie/templates/veggie/index.html:23
 msgid "Links"
-msgstr ""
+msgstr "Links"
 
 #: veggie/templates/veggie/order.html:6
 msgid "Order Overview"
@@ -211,20 +209,18 @@ msgstr "Bestellungsdetails"
 
 #: veggie/templates/veggie/status.html:14
 #: veggie/templates/veggie/status.html:48
-#, fuzzy
-#| msgid "Order already confirmed"
 msgid "Order confirmed"
 msgstr "Bestellung bereits bestätigt"
 
 #: veggie/templates/veggie/status.html:18
 #, fuzzy
-#| msgid "Confirm order for "
+#| msgid "New Order"
 msgid "Cancel Order"
-msgstr "Bestellung bestätigen für"
+msgstr "Neue Bestellung"
 
 #: veggie/templates/veggie/status.html:23
 #, fuzzy
-#| msgid "Order already confirmed"
+#| msgid "Order confirmed"
 msgid "Order not confirmed"
 msgstr "Bestellung bereits bestätigt"
 
@@ -234,13 +230,13 @@ msgstr "Bestellung bestätigen für"
 
 #: veggie/templates/veggie/status.html:51
 #, fuzzy
-#| msgid "Order successfully confirmed"
+#| msgid "Order confirmed"
 msgid "Order cancelled"
-msgstr "Bestellung erfolgreich bestätigt"
+msgstr "Bestellung bereits bestätigt"
 
 #: veggie/templates/veggie/status.html:58
 msgid "Price per unit"
-msgstr ""
+msgstr "Preis pro Einheit"
 
 #: veggie/templates/veggie/status.html:70 veggie/views.py:202
 msgid "Total Amount"
@@ -280,13 +276,10 @@ msgstr "Bestellung erfolgreich bestätigt"
 
 #: veggie/views.py:163
 #, fuzzy
-#| msgid "Order already confirmed"
+#| msgid "Order confirmed"
 msgid "Order not yet confirmed"
 msgstr "Bestellung bereits bestätigt"
 
 #: veggie/views.py:204
 msgid "Done"
 msgstr "Erledigt"
-
-#~ msgid "Order Confirmation"
-#~ msgstr "Bestellung bestätigen"
