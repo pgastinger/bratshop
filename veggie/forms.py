@@ -12,7 +12,7 @@ class OrderForm(forms.Form):
                                    validators=[RegexValidator(regex="^[a-zA-Z_-]+$")])
     data_email = forms.EmailField(label=_('Email'), validators=[EmailValidator()])
     data_phone = forms.CharField(label=_('Phone'), max_length=20, validators=[RegexValidator(regex="^[0-9/ _-]+$")])
-    if not settings.DEBUG:
+    if not (settings.DEBUG or settings.UNITTEST):
         antispam = ReCaptchaField()
 
     def __init__(self, orderdates, *args, **kwargs):

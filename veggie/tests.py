@@ -178,14 +178,16 @@ class ViewTests(TestCase):
         response = self.client.post('/veggie/1', {"data_firstname": "Max", "data_surname": "Mustermann",
                                                   "data_email": "max.mustermann@mailinator.com", "data_orderdate": 2,
                                                   "data_phone": "0043500888", "shopitem_1": 10, "shopitem_2": 0})
-        order = Order.objects.filter().all()
+        order = Order.objects.all()
         self.assertEqual(len(order), 2)
         order = Order.objects.filter(order_email="max.mustermann@mailinator.com").all()
         self.assertEqual(len(order), 1)
 
     def test_13_CancelOrder(self):
         order = Order.objects.filter(order_confirmed=False).all()
-        self.assertEqual(len(order), 0)
+        self.assertEqual(len(order), 1)
+        response = self.client.get('/veggie/confirm/topsecretconfirmhash', follow=True)
+        self.assertEquals(response.status_code, 200)
         response = self.client.get('/veggie/cancel/topsecretconfirmhash', follow=True)
         self.assertEquals(response.status_code, 200)
         order = Order.objects.filter(order_confirmed=False).all()

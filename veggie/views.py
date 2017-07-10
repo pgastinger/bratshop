@@ -69,10 +69,14 @@ def offerDetail(request, id):
             messages.add_message(request, messages.INFO, _(
                 'Order added successfully, you have to confirm the order with the sent confirmation link via email'))
 
+            if settings.UNITTEST:
+                httphost = "localhost"
+            else:
+                httphost = request.META['HTTP_HOST']
             email = EmailMessage(
                 _("Order -%(description)s- for -%(date)s-, please confirm order") % {
                     "date": neworder.order_date.order_date, 'description': neworder.offer.offer_text},
-                renderEmail("%s://%s" % (request.scheme, request.META['HTTP_HOST']), confirmhash, sum, ordered_items,
+                renderEmail("%s://%s" % (request.scheme, httphost), confirmhash, sum, ordered_items,
                             neworder.order_date.order_date, mistune.markdown(offer.offer_description)),
                 'bratshop@do-not-reply.com',
                 [orderForm.cleaned_data.get("data_email")],
@@ -94,7 +98,7 @@ def offerDetail(request, id):
 
 @login_required(login_url='/admin/login/')
 def order(request):
-    orders = OrderDate.objects.filter(status=True)
+    orders = OrderDate.objects.filter(status=True).order_by("-order_date")
     context = {'orders': orders}
     return render(request, 'veggie/order.html', context)
 
