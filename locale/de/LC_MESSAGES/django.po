@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-18 09:57+0000\n"
+"POT-Creation-Date: 2017-07-10 08:46+0000\n"
 "PO-Revision-Date: 2017-06-18 11:58+0200\n"
 "Last-Translator: Peter Gastinger <peter.gastinger@r-it.at>\n"
 "Language-Team: \n"
@@ -18,15 +18,15 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 1.8.7.1\n"
 
-#: bratshop/settings.py:122
+#: bratshop/settings.py:128
 msgid "English"
 msgstr "Englisch"
 
-#: bratshop/settings.py:123
+#: bratshop/settings.py:129
 msgid "German"
 msgstr "Deutsch"
 
-#: veggie/forms.py:10
+#: veggie/forms.py:9
 msgid "First Name"
 msgstr "Vorname"
 
@@ -34,20 +34,20 @@ msgstr "Vorname"
 msgid "Surname"
 msgstr "Nachname"
 
-#: veggie/forms.py:12 veggie/templates/veggie/orderdetail.html:17
-#: veggie/views.py:171
+#: veggie/forms.py:13 veggie/templates/veggie/orderdetail.html:23
+#: veggie/views.py:194
 msgid "Email"
 msgstr "E-Mail-Adresse"
 
-#: veggie/forms.py:13
+#: veggie/forms.py:14
 msgid "Phone"
 msgstr "Telefonnummer"
 
-#: veggie/forms.py:19
+#: veggie/forms.py:20
 msgid "Date"
 msgstr "Datum"
 
-#: veggie/forms.py:19
+#: veggie/forms.py:21
 #, python-format
 msgid "%(orderdate)s (available until %(availabledate)s)"
 msgstr "%(orderdate)s (bestellbar bis %(availabledate)s)"
@@ -56,7 +56,7 @@ msgstr "%(orderdate)s (bestellbar bis %(availabledate)s)"
 msgid "Confirm order for "
 msgstr "Bestellung bestätigen für"
 
-#: veggie/templates/mail/email.html:8 veggie/templates/mail/email.html:50
+#: veggie/templates/mail/email.html:8 veggie/templates/mail/email.html:55
 msgid ""
 "If this order was not submitted by you or you reconsidered, just ignore this "
 "mail"
@@ -64,48 +64,62 @@ msgstr ""
 "Falls diese Bestellung nicht von Ihnen in Auftrag gegeben wurde, bitte diese "
 "E-Mail einfach ignorieren."
 
-#: veggie/templates/mail/email.html:21 veggie/templates/veggie/detail.html:30
-#: veggie/templates/veggie/orderdetail.html:42
+#: veggie/templates/mail/email.html:15
+#, fuzzy
+#| msgid "Confirm order for "
+msgid "Cancel order for "
+msgstr "Bestellung bestätigen für"
+
+#: veggie/templates/mail/email.html:17
+#, fuzzy
+#| msgid "Order Details"
+msgid "Order status for "
+msgstr "Bestellungsdetails"
+
+#: veggie/templates/mail/email.html:26 veggie/templates/veggie/detail.html:30
+#: veggie/templates/veggie/orderdetail.html:51
 msgid "Description"
 msgstr "Beschreibung"
 
-#: veggie/templates/mail/email.html:22
-#: veggie/templates/veggie/orderdetail.html:42
+#: veggie/templates/mail/email.html:27
+#: veggie/templates/veggie/orderdetail.html:51
 msgid "Amount"
 msgstr "Menge"
 
-#: veggie/templates/mail/email.html:23
-#: veggie/templates/veggie/orderdetail.html:42
+#: veggie/templates/mail/email.html:28
+#: veggie/templates/veggie/orderdetail.html:51
 msgid "Price"
 msgstr "Preis"
 
-#: veggie/templates/mail/email.html:24
+#: veggie/templates/mail/email.html:29
 msgid "Sum"
 msgstr "Summe"
 
-#: veggie/templates/mail/email.html:37
-#: veggie/templates/veggie/orderdetail.html:42
-#: veggie/templates/veggie/orderdetail.html:64
+#: veggie/templates/mail/email.html:42
+#: veggie/templates/veggie/orderdetail.html:51
+#: veggie/templates/veggie/orderdetail.html:73
 msgid "Total amount"
 msgstr "Summe"
-
-#: veggie/templates/veggie/confirm.html:6
-msgid "Order Confirmation"
-msgstr "Bestellung bestätigen"
 
 #: veggie/templates/veggie/detail.html:6
 msgid "New Order"
 msgstr "Neue Bestellung"
 
-#: veggie/templates/veggie/detail.html:14 veggie/templates/veggie/index.html:24
+#: veggie/templates/veggie/detail.html:14
+#: veggie/templates/veggie/index.html:24
+#: veggie/templates/veggie/status.html:24
 msgid "Order Summary"
 msgstr "Bestellübersicht"
 
-#: veggie/templates/veggie/detail.html:18 veggie/templates/veggie/index.html:29
+#: veggie/templates/veggie/detail.html:18
+#: veggie/templates/veggie/index.html:29
+#: veggie/templates/veggie/status.html:29
 msgid "Login (Admin)"
 msgstr "Anmelden (Administrationsoberfläche)"
 
-#: veggie/templates/veggie/detail.html:23 veggie/templates/veggie/index.html:34
+#: veggie/templates/veggie/detail.html:23
+#: veggie/templates/veggie/index.html:34
+#: veggie/templates/veggie/status.html:34
 msgid "Administration interface"
 msgstr "Administrationsoberfläche"
 
@@ -114,7 +128,7 @@ msgid "Customer"
 msgstr "Kunde"
 
 #: veggie/templates/veggie/detail.html:51
-#: veggie/templates/veggie/detail.html:73
+#: veggie/templates/veggie/detail.html:76
 msgid "Error:"
 msgstr "Fehler:"
 
@@ -122,19 +136,20 @@ msgstr "Fehler:"
 msgid "Shopitems"
 msgstr "Produkte"
 
-#: veggie/templates/veggie/detail.html:92
+#: veggie/templates/veggie/detail.html:95
 msgid "Submit"
 msgstr "Abschicken"
 
-#: veggie/templates/veggie/detail.html:95
+#: veggie/templates/veggie/detail.html:98
 msgid "Reset"
 msgstr "Daten löschen"
 
-#: veggie/templates/veggie/index.html:6
+#: veggie/templates/veggie/index.html:6 veggie/templates/veggie/status.html:6
 msgid "Available Offers"
 msgstr "Verfügbare Angebote"
 
 #: veggie/templates/veggie/index.html:23
+#: veggie/templates/veggie/status.html:23
 msgid "Links"
 msgstr ""
 
@@ -142,31 +157,35 @@ msgstr ""
 msgid "Order Overview"
 msgstr "Bestellübersicht"
 
-#: veggie/templates/veggie/orderdetail.html:6
+#: veggie/templates/veggie/orderdetail.html:7
 msgid "Order Details"
 msgstr "Bestellungsdetails"
 
-#: veggie/templates/veggie/orderdetail.html:11
+#: veggie/templates/veggie/orderdetail.html:14
 msgid "back"
 msgstr "zurück"
 
-#: veggie/templates/veggie/orderdetail.html:13
+#: veggie/templates/veggie/orderdetail.html:16
 msgid "Download xls-file with confirmed orders"
 msgstr "XLS-Datei mit den bestätigten Bestellungen herunterladen"
 
-#: veggie/templates/veggie/orderdetail.html:17 veggie/views.py:169
+#: veggie/templates/veggie/orderdetail.html:23 veggie/views.py:192
 msgid "Name"
 msgstr "Name"
 
-#: veggie/templates/veggie/orderdetail.html:17 veggie/views.py:170
+#: veggie/templates/veggie/orderdetail.html:23 veggie/views.py:193
 msgid "Telephone"
 msgstr "Telefon"
 
-#: veggie/templates/veggie/orderdetail.html:17
+#: veggie/templates/veggie/orderdetail.html:23 veggie/views.py:195
+msgid "Added/Confirmed"
+msgstr ""
+
+#: veggie/templates/veggie/orderdetail.html:23
 msgid "Status"
 msgstr "Status"
 
-#: veggie/templates/veggie/orderdetail.html:17 veggie/views.py:173
+#: veggie/templates/veggie/orderdetail.html:23 veggie/views.py:197
 msgid "Items"
 msgstr "Bestellte Produkte"
 
@@ -174,11 +193,11 @@ msgstr "Bestellte Produkte"
 msgid "Out Of Sale"
 msgstr "Ausverkauft"
 
-#: veggie/templates/veggie/outofsale.html:10
+#: veggie/templates/veggie/outofsale.html:11
 msgid "At the moment, there are no order dates available!"
 msgstr "Momentan gibt es keine Bestelltage für Produkte"
 
-#: veggie/views.py:69
+#: veggie/views.py:70
 msgid ""
 "Order added successfully, you have to confirm the order with the sent "
 "confirmation link via email"
@@ -186,28 +205,48 @@ msgstr ""
 "Bestellung erfolgreich angelegt. Bitte im Bestätigungs-Mail auf den "
 "Bestätigungs-Link klicken."
 
-#: veggie/views.py:72
+#: veggie/views.py:73
 #, python-format
 msgid "Order -%(description)s- for -%(date)s-, please confirm order"
 msgstr ""
 "Bestellung -%(description)s- für -%(date)s-, bitte Bestellung bestätigen"
 
-#: veggie/views.py:131
+#: veggie/views.py:132
 msgid "No orders found"
 msgstr "Keine Bestellungen gefunden"
 
-#: veggie/views.py:138
+#: veggie/views.py:139
 msgid "Order already confirmed"
 msgstr "Bestellung bereits bestätigt"
 
-#: veggie/views.py:142
+#: veggie/views.py:144
 msgid "Order successfully confirmed"
 msgstr "Bestellung erfolgreich bestätigt"
 
-#: veggie/views.py:172
+#: veggie/views.py:157
+#, fuzzy
+#| msgid "Order successfully confirmed"
+msgid "Order successfully cancelled"
+msgstr "Bestellung erfolgreich bestätigt"
+
+#: veggie/views.py:159
+#, fuzzy
+#| msgid "Order already confirmed"
+msgid "Order not yet confirmed"
+msgstr "Bestellung bereits bestätigt"
+
+#: veggie/views.py:196
 msgid "Total Amount"
 msgstr "Summe"
 
-#: veggie/views.py:174
+#: veggie/views.py:198
 msgid "Done"
 msgstr "Erledigt"
+
+#, fuzzy
+#~| msgid "Order Details"
+#~ msgid "Order Status"
+#~ msgstr "Bestellungsdetails"
+
+#~ msgid "Order Confirmation"
+#~ msgstr "Bestellung bestätigen"

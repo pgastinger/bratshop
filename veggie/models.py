@@ -16,9 +16,9 @@ class Item(models.Model):
     offer = models.ForeignKey(Offer, on_delete=models.CASCADE)
     item_description = models.CharField(max_length=200)
     item_price = models.FloatField()
-    item_unitsize = models.CharField(max_length=10, default="EUR/kg")
+    item_unitsize = models.CharField(max_length=15, default="EUR/kg")
     item_status = models.BooleanField(default=True)
-    item_image = models.ImageField(null=True)
+    item_image = models.ImageField(null=True, default=False)
     change_date = models.DateTimeField(auto_now=True)
 
     def __str__(self):
@@ -48,6 +48,7 @@ class Order(models.Model):
     order_confirm_hash = models.CharField(max_length=64)
     add_date = models.DateTimeField()
     confirm_date = models.DateTimeField(null=True)
+    cancel_date = models.DateTimeField(null=True)
 
     def __str__(self):
         return str(self.order_date)

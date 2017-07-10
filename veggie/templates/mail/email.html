@@ -11,6 +11,11 @@
 <br/>
 
 <a href="{{ host }}/veggie/confirm/{{ confirmhash }}">{% trans "Confirm order for " %} {{ orderdate }}</a>
+<br/>
+<a href="{{ host }}/veggie/cancel/{{ confirmhash }}">{% trans "Cancel order for " %} {{ orderdate }}</a>
+<br/>
+<a href="{{ host }}/veggie/status/{{ confirmhash }}">{% trans "Order status for " %} {{ orderdate }}</a>
+
 
 <br/>
 <br/>

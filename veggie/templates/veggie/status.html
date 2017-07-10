@@ -1,0 +1,24 @@
+{% extends 'veggie/base.html' %}
+{% load bootstrap3 %}
+{% load i18n %}
+
+{% block title %}
+    {% trans "Order Status" %}
+{% endblock %}
+
+{% block content %}
+
+{% if status %}
+
+<span class="label label-success">
+{% trans "Order confirmed" %}
+</span>
+
+{% else %}
+
+<span class="label label-danger">
+{% trans "Order not confirmed" %}
+</span>
+
+{% endif %}
+{% endblock %}

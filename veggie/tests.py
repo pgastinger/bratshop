@@ -182,3 +182,17 @@ class ViewTests(TestCase):
         self.assertEqual(len(order), 2)
         order = Order.objects.filter(order_email="max.mustermann@mailinator.com").all()
         self.assertEqual(len(order), 1)
+
+    def test_13_CancelOrder(self):
+        order = Order.objects.filter(order_confirmed=False).all()
+        self.assertEqual(len(order), 0)
+        response = self.client.get('/veggie/cancel/topsecretconfirmhash', follow=True)
+        self.assertEquals(response.status_code, 200)
+        order = Order.objects.filter(order_confirmed=False).all()
+        self.assertEqual(len(order), 1)
+
+    def test_14_OrderStatus(self):
+        response = self.client.get('/veggie/status/topsecretconfirmhashdoesnotexist', follow=True)
+        self.assertEquals(response.status_code, 404)
+        response = self.client.get('/veggie/status/topsecretconfirmhash', follow=True)
+        self.assertEquals(response.status_code, 200)

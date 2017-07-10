@@ -148,6 +148,27 @@ def confirmOrder(request, confirmhash):
         return redirect('index')
 
 
+def cancelOrder(request, confirmhash):
+    offer = get_object_or_404(Order, order_confirm_hash=confirmhash)
+    if offer.order_confirmed:
+        offer.order_confirmed = False
+        offer.cancel_date = timezone.now()
+        offer.save()
+        messages.add_message(request, messages.SUCCESS, _('Order successfully cancelled'))
+    else:
+        messages.add_message(request, messages.INFO, _('Order not yet confirmed'))
+    if request.META.get('HTTP_REFERER'):
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    else:
+        return redirect('index')
+
+
+def orderStatus(request, confirmhash):
+    offer = get_object_or_404(Order, order_confirm_hash=confirmhash)
+    context = {'status': offer.order_confirmed }
+    return render(request, 'veggie/status.html', context)
+
+
 @login_required(login_url='/admin/login/')
 def downloadxls(request, orderdateid):
     queryset = OrderDate.objects.filter(status=True)
