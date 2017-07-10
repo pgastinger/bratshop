@@ -168,8 +168,10 @@ def cancelOrder(request, confirmhash):
 
 
 def orderStatus(request, confirmhash):
-    offer = get_object_or_404(Order, order_confirm_hash=confirmhash)
-    context = {'status': offer.order_confirmed }
+    order = get_object_or_404(Order, order_confirm_hash=confirmhash)
+    orderitems = order.orderitem_set.all()
+    sumvalue = sum([item.amount*item.item.item_price for item in orderitems])
+    context = {'order': order, 'items': orderitems, 'sum': sumvalue, 'confirmhash':confirmhash }
     return render(request, 'veggie/status.html', context)
 
 
