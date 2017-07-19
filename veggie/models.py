@@ -18,7 +18,7 @@ class Item(models.Model):
     item_price = models.FloatField()
     item_unitsize = models.CharField(max_length=15, default="EUR/kg")
     item_status = models.BooleanField(default=True)
-    item_image = models.ImageField(null=True, default=False)
+    item_image = models.ImageField(blank=True)
     change_date = models.DateTimeField(auto_now=True)
 
     def __str__(self):
