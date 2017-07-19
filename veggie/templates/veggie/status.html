@@ -45,10 +45,10 @@
 <td><b>{% trans "Email" %}</b></td><td>{{ order.order_email }}</td>
 </tr>
 <tr>
-<td><b>{% trans "Order confirmed" %}</b></td><td>{{ order.confirm_date }}</td>
+<td><b>{% trans "Order confirmed" %}</b></td><td>{% if order.confirm_date %} {{ order.confirm_date }} {% endif %}</td>
 </tr>
 <tr>
-<td><b>{% trans "Order cancelled" %}</b></td><td>{{ order.cancel_date }}</td>
+<td><b>{% trans "Order cancelled" %}</b></td><td>{% if order.cancel_date %} {{ order.cancel_date }} {% endif %}</td>
 </tr>
 <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
 </table>
