@@ -4,4 +4,4 @@ XlsxWriter==1.0.4
 Pillow==5.1.0
 django-recaptcha==1.4.0
 django-debug-toolbar==1.9.1
-django-bootstrap3
+django-bootstrap3==10.0.1
