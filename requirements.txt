@@ -1,7 +1,7 @@
 django==2.0.5
 mistune==0.8.3
 XlsxWriter==1.0.4
-Pillow
+Pillow==5.1.0
 django-recaptcha
 django-debug-toolbar
 django-bootstrap3
